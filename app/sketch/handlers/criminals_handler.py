@@ -2,6 +2,8 @@ from sketch import models
 import base64
 from loguru import logger
 from django.core.files.base import ContentFile
+from django.db.models import QuerySet, Q
+import json
 
 
 def criminal_detail_import(request_data: dict):
@@ -72,7 +74,7 @@ def image_detail_import(iin: str, data: dict):
         min_values.lips_size = float(data['lips_size'])
     min_values.save()
 
-    models.CriminalsImage.objects.create(
+    image_details = models.CriminalsImage.objects.create(
         iin=models.CriminalsData.objects.get(iin=iin),
         nose_len=data['nose_length'],
         right_brow_size=data['right_brow_size'],
@@ -83,14 +85,34 @@ def image_detail_import(iin: str, data: dict):
         lips_size=data['lips_size']
     )
 
-    return
+    return image_details
 
 
-def normalized_feature_array(iin: str):
+def normalized_feature_array(image_details: QuerySet):
     """
 
     """
+    max_values = models.MaxMin.objects.get(func_name='max')
+    min_values = models.MaxMin.objects.get(func_name='min')
 
+    normalized_dict = {}
+    normalized_dict['nose_len'] = (image_details.nose_len - min_values.nose_len) / (
+                max_values.nose_len - min_values.nose_len)
+    normalized_dict['right_brow_size'] = (image_details.right_brow_size - min_values.right_brow_size) / (
+                max_values.right_brow_size - min_values.right_brow_size)
+    normalized_dict['left_brow_size'] = (image_details.left_brow_size - min_values.left_brow_size) / (
+                max_values.left_brow_size - min_values.left_brow_size)
+    normalized_dict['left_eye_size'] = (image_details.left_eye_size - min_values.left_eye_size) / (
+                max_values.left_eye_size - min_values.left_eye_size)
+    normalized_dict['right_eye_size'] = (image_details.right_eye_size - min_values.right_eye_size) / (
+                max_values.right_eye_size - min_values.right_eye_size)
+    normalized_dict['nose_size'] = (image_details.nose_size - min_values.nose_size) / (
+                max_values.nose_size - min_values.nose_size)
+    normalized_dict['lips_size'] = (image_details.lips_size - min_values.lips_size) / (
+                max_values.lips_size - min_values.lips_size)
+
+    image_details.normalized_feature = json.dumps(normalized_dict)
+    image_details.save()
 
     return
 

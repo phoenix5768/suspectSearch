@@ -9,6 +9,7 @@ from .models import CriminalsData
 from sketch.ml import feature_extraction as fe
 from sketch.handlers import criminals_handler as ch
 from loguru import logger
+from django.db.models import QuerySet, Q
 
 from . serializer import *
 from rest_framework.response import Response
@@ -29,10 +30,10 @@ class CriminalsDataView(APIView):
 
         # finding facial metrics and importing them into DB
         face_detials = fe.Mesh(f'/home/phoenix/education/SeniorProject/suspectSearch/app{criminal.picture.url}')
-        ch.image_detail_import(criminal.iin, face_detials)
+        image_details = ch.image_detail_import(criminal.iin, face_detials)
 
         # creating normalized feature vector
-        ch.normalized_feature_array(request_data.get('iin'))
+        ch.normalized_feature_array(image_details)
 
         resp = {
             'iin': request_data.get('iin'),
