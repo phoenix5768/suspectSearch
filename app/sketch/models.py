@@ -74,6 +74,7 @@ class Logs(models.Model):
 
 
 class MaxMin(models.Model):
+    func_name = models.CharField(verbose_name='Max or Min', max_length=32, default='max')
     nose_len = models.FloatField(default=0)
     right_brow_size = models.FloatField(default=0)
     left_brow_size = models.FloatField(default=0)
@@ -81,3 +82,6 @@ class MaxMin(models.Model):
     right_eye_size = models.FloatField(default=0)
     nose_size = models.FloatField(default=0)
     lips_size = models.FloatField(default=0)
+
+    def __str__(self):
+        return self.func_name
