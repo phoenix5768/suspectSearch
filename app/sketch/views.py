@@ -1,3 +1,6 @@
+import json
+import ujson
+
 from django.shortcuts import render, redirect, HttpResponse
 from django.contrib.auth import authenticate, login
 from django.contrib import messages
@@ -10,6 +13,7 @@ from sketch.ml import feature_extraction as fe
 from sketch.handlers import criminals_handler as ch
 from loguru import logger
 from django.db.models import QuerySet, Q
+from sketch.ml import search_algorithm as sa
 
 from . serializer import *
 from rest_framework.response import Response
@@ -51,7 +55,19 @@ class CriminalsDataView(APIView):
 
 class SearchCriminalsView(APIView):
     def post(self, request):
-        return JsonResponse("message: Success")
+        request_data = ujson.loads(request.body.decode('utf-8'))
+        search_dict = {
+            'nose_len': request_data.get('nose_length'),
+            'right_brow_size': request_data.get('right_brow_size'),
+            'left_brow_size': request_data.get('left_brow_size'),
+            'left_eye_size': request_data.get('left_eye_size'),
+            'right_eye_size': request_data.get('right_eye_size'),
+            'nose_size': request_data.get('nose_size'),
+            'lips_size': request_data.get('lips_size')
+        }
+
+        response = sa.search_criminal(search_dict)
+        return JsonResponse(ujson.dumps(response))
 
 
 
@@ -95,6 +111,3 @@ class SearchCriminalsView(APIView):
 #         form = PolicemanForm()
 #     return render(request, 'add_policeman.html', {'form': form})
 #
-#
-# def home(request):
-#     return render(request, 'home.html', {})

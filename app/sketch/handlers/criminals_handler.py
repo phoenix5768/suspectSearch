@@ -115,18 +115,3 @@ def normalized_feature_array(image_details: QuerySet):
     image_details.save()
 
     return
-
-
-def search_criminal(data: dict) -> list:
-    result = []
-
-    # Current idea of a search algorithm
-    # 1. Normalise data (So each metric will have the same weight)
-    # Example:
-    #          normalized_nose_length = (nose_length - min_nose_length) / (max_nose_length - min_nose_length)
-    # 2. Concatenate metrics into a single feature vector (np.array() or pd.Series())
-    # 3. Compare feature vectors and choose the closest objects (like within 10%)
-    # Comparing by calculating distances. Possible techniques: Euclidean distance or cosine similarity. Or maybe even KNN
-    # linera or logistic regression
-
-    return result
