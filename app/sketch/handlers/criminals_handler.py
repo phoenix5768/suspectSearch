@@ -38,6 +38,40 @@ def image_detail_import(iin: str, data: dict):
     """
 
     """
+    max_values = models.MaxMin.objects.get(func_name='max')
+    if max_values.nose_len < float(data['nose_length']):
+        max_values.nose_len = float(data['nose_length'])
+    if max_values.right_brow_size < float(data['right_brow_size']):
+        max_values.right_brow_size = float(data['right_brow_size'])
+    if max_values.left_brow_size < float(data['left_brow_size']):
+        max_values.left_brow_size = float(data['left_brow_size'])
+    if max_values.left_eye_size < float(data['left_eye_size']):
+        max_values.left_eye_size = float(data['left_eye_size'])
+    if max_values.right_eye_size < float(data['right_eye_size']):
+        max_values.right_eye_size = float(data['right_eye_size'])
+    if max_values.nose_size < float(data['nose_size']):
+        max_values.nose_size = float(data['nose_size'])
+    if max_values.lips_size < float(data['lips_size']):
+        max_values.lips_size = float(data['lips_size'])
+    max_values.save()
+
+    min_values = models.MaxMin.objects.get(func_name='min')
+    if min_values.nose_len > float(data['nose_length']) != 0:
+        min_values.nose_len = float(data['nose_length'])
+    if min_values.right_brow_size > float(data['right_brow_size']) != 0:
+        min_values.right_brow_size = float(data['right_brow_size'])
+    if min_values.left_brow_size > float(data['left_brow_size']) != 0:
+        min_values.left_brow_size = float(data['left_brow_size'])
+    if min_values.left_eye_size > float(data['left_eye_size']) != 0:
+        min_values.left_eye_size = float(data['left_eye_size'])
+    if min_values.right_eye_size > float(data['right_eye_size']) != 0:
+        min_values.right_eye_size = float(data['right_eye_size'])
+    if min_values.nose_size > float(data['nose_size']) != 0:
+        min_values.nose_size = float(data['nose_size'])
+    if min_values.lips_size > float(data['lips_size']) != 0:
+        min_values.lips_size = float(data['lips_size'])
+    min_values.save()
+
     models.CriminalsImage.objects.create(
         iin=models.CriminalsData.objects.get(iin=iin),
         nose_len=data['nose_length'],
