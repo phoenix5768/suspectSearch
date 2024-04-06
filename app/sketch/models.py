@@ -71,3 +71,13 @@ class Logs(models.Model):
     policeman_logs = models.ForeignKey(Policeman, on_delete=models.CASCADE)
     action_time = models.DateTimeField(editable=False, null=True, blank=True)
     action = models.TextField(null=True, blank=True)
+
+
+class MaxMin(models.Model):
+    nose_len = models.FloatField(default=0)
+    right_brow_size = models.FloatField(default=0)
+    left_brow_size = models.FloatField(default=0)
+    left_eye_size = models.FloatField(default=0)
+    right_eye_size = models.FloatField(default=0)
+    nose_size = models.FloatField(default=0)
+    lips_size = models.FloatField(default=0)
