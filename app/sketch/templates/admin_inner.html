@@ -1,0 +1,44 @@
+
+{% block content %}
+{% if user.is_authenticated %}
+
+<h1>Inner admin page custom</h1>
+<div class="collapse navbar-collapse" id="navbarNav">
+  <ul class="navbar-nav ml-auto">
+    <li class="nav-item">
+      <a class="nav-link" href="#">Insert Criminal</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="{% url 'add_policeman' %}">Add Policeman</a>
+    </li>
+  </ul>
+</div>
+
+
+{% else %}
+
+<div class="col-md-6 offset-md-3">
+    <h1>Login</h1>
+    <br/>
+    <form method="POST" action="{% url 'admin_inner' %}">
+        {% csrf_token %}
+        
+            <div class="mb-3">
+              
+              <input type="email" class="form-control" name = "email", 
+              placeholder="Email" required>
+              
+            </div>
+            <div class="mb-3">
+              
+              <input type="password" class="form-control" name = "password", 
+              placeholder="Password" required>
+            </div>
+            <br/>
+            <button type="submit" class="btn btn-primary">Login</button>
+          
+    </form>
+    </div>
+    
+{% endif %}
+{% endblock %}
