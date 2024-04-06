@@ -20,7 +20,6 @@ class CriminalsData(models.Model):
         return self.first_name + ' ' + self.last_name + ' ' + self.iin
 
 
-
 class CriminalsImage(models.Model):
     iin = models.ForeignKey(CriminalsData, on_delete=models.CASCADE)
     nose_len = models.FloatField(default=0)
@@ -37,7 +36,7 @@ class CriminalsImage(models.Model):
         verbose_name_plural = "Criminals' Image Details"
 
     def __str__(self):
-        return CriminalsData.first_name + ' ' + CriminalsData.first_name + ' ' + self.iin
+        return self.iin.first_name + ' ' + self.iin.last_name
 
 
 class Policeman(models.Model):
