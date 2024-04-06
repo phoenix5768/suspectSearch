@@ -28,7 +28,7 @@ class CriminalsDataView(APIView):
         criminal = ch.criminal_detail_import(request_data)
 
         # finding facial metrics and importing them into DB
-        face_detials = fe.Mesh(f'/home/phoenix/SP_new/app{criminal.picture.url}')
+        face_detials = fe.Mesh(f'/home/phoenix/education/SeniorProject/suspectSearch/app{criminal.picture.url}')
         ch.image_detail_import(criminal.iin, face_detials)
 
         # creating normalized feature vector
