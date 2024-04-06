@@ -12,6 +12,14 @@ class CriminalsData(models.Model):
     zip_code = models.CharField(verbose_name='Zip code', max_length=64)
     picture = models.ImageField(null=True, blank=True, upload_to='images/')
 
+    class Meta:
+        verbose_name = "Criminal's Personal Data"
+        verbose_name_plural = "Criminals' Personal Data"
+
+    def __str__(self):
+        return self.first_name + ' ' + self.last_name + ' ' + self.iin
+
+
 
 class CriminalsImage(models.Model):
     iin = models.ForeignKey(CriminalsData, on_delete=models.CASCADE)
@@ -23,6 +31,13 @@ class CriminalsImage(models.Model):
     nose_size = models.FloatField(default=0)
     lips_size = models.FloatField(default=0)
     normalized_feature = models.JSONField(verbose_name='Normalized Feature Array', null=True, blank=True)
+
+    class Meta:
+        verbose_name = "Criminal's Image Detail"
+        verbose_name_plural = "Criminals' Image Details"
+
+    def __str__(self):
+        return CriminalsData.first_name + ' ' + CriminalsData.first_name + ' ' + self.iin
 
 
 class Policeman(models.Model):
@@ -37,7 +52,7 @@ class Policeman(models.Model):
     password = models.CharField(verbose_name='Password', max_length=256)
 
     def __str__(self):
-        return self.first_name+ ' '+self.last_name
+        return self.first_name + ' ' + self.last_name
 
 
 class Admin(models.Model):
@@ -47,8 +62,9 @@ class Admin(models.Model):
     email = models.CharField(max_length=256)
     #username = models.CharField(max_length=256)
     password = models.CharField(verbose_name='Password', max_length=256)
+
     def __str__(self):
-        return self.first_name+ ' '+self.last_name
+        return self.first_name + ' ' + self.last_name
 
 
 class Logs(models.Model):
