@@ -10,6 +10,7 @@ from django.http import JsonResponse, HttpResponseRedirect, HttpResponse, HttpRe
 from django.contrib.auth.decorators import user_passes_test
 
 from . import models
+from .forms import CriminalsDataForm
 from .models import CriminalsData
 from sketch.ml import feature_extraction as fe
 from sketch.handlers import criminals_handler as ch
@@ -118,6 +119,26 @@ class GetCriminalsView(APIView):
         logger.info(resp)
 
         return JsonResponse(resp, safe=False)
+
+
+def import_criminals(request):
+    if request.method == "POST":
+        form = CriminalsDataForm(request.POST, request.FILES)
+        if form.is_valid():
+            form_data = form.cleaned_data
+            iin = form_data.get('iin')
+            form.save()
+
+            criminal = CriminalsData.objects.get(iin=iin)
+            face_detials = fe.Mesh(f'/home/phoenix/senior-project/app{criminal.picture.url}')
+            ch.image_detail_import(iin, face_detials)
+            messages.success(request, 'success')
+            return redirect('cry')
+    else:
+        form = CriminalsDataForm()
+
+    return render(request, 'import_criminals.html', {'form': form})
+
 
 
 # def admin_inner(request):
