@@ -21,7 +21,7 @@ from sketch import models
 # Comparing by calculating distances. Possible techniques: Euclidean distance or cosine similarity. Or maybe even KNN
 # linera or logistic regression
 
-# First attempt with Euclidean distance apporach
+# First attempt with Euclidean distance approach
 def euclidean_distance(vec1, vec2):
     """Calculate the Euclidean distance between two vectors."""
     return np.sqrt(np.sum((vec1 - vec2) ** 2))

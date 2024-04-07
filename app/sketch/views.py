@@ -28,6 +28,7 @@ def admin_login_view(request):
 
 
 class CriminalsDataView(APIView):
+    @csrf_exempt
     def post(self, request):
         request_data = ujson.loads(request.body.decode('utf-8'))
 
@@ -43,16 +44,16 @@ class CriminalsDataView(APIView):
 
         resp = {
             'iin': request_data.get('iin'),
-            'first_name': request_data.get('firstName'),
-            'last_name': request_data.get('lastName'),
+            'firstName': request_data.get('firstName'),
+            'lastName': request_data.get('lastName'),
             'dob': request_data.get('dob'),
-            'martial_status': request_data.get('maritalStatus'),
-            'offence': request_data.get('offense'),
-            'zip_code': request_data.get('zipCode'),
+            'maritalStatus': request_data.get('maritalStatus'),
+            'offense': request_data.get('offense'),
+            'zipCode': request_data.get('zipCode'),
             'picture': request_data.get('picture')
         }
 
-        return JsonResponse(resp)
+        return JsonResponse(resp, safe=False)
 
 
 class SearchCriminalsView(APIView):
@@ -80,18 +81,43 @@ class SearchCriminalsView(APIView):
 
             suspects_data.append(
                 {
-                    'First Name': data.first_name,
-                    'Last Name': data.last_name,
-                    'IIN': data.iin,
-                    'Martial Status': data.martial_status,
-                    'Offence': data.offence,
-                    'Zip Code': data.zip_code,
-                    'Image': encoded_image_data
+                    'firstName': data.first_name,
+                    'lastName': data.last_name,
+                    'iin': data.iin,
+                    'maritalStatus': data.martial_status,
+                    'offense': data.offence,
+                    'zipCode': data.zip_code,
+                    'image': encoded_image_data
                 }
             )
 
-        return JsonResponse(ujson.dumps(suspects_data))
+        return JsonResponse(ujson.dumps(suspects_data), safe=False)
 
+
+class GetCriminalsView(APIView):
+    @csrf_exempt
+    def get(self, request):
+        response = []
+        data = models.CriminalsData.objects.all()
+        for criminal in data:
+            image_data = criminal.picture.read()
+            encoded_image_data = base64.b64encode(image_data).decode('utf-8')
+
+            response.append(
+                {
+                    'firstName': criminal.first_name,
+                    'lastName': criminal.last_name,
+                    'iin': criminal.iin,
+                    'maritalStatus': criminal.martial_status,
+                    'offense': criminal.offence,
+                    'zipCode': criminal.zip_code,
+                    'image': encoded_image_data
+                }
+            )
+
+        resp = ujson.dumps(response)
+
+        return JsonResponse(resp, safe=False)
 
 
 # def admin_inner(request):
