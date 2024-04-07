@@ -1,3 +1,4 @@
+import base64
 import json
 import ujson
 
@@ -74,6 +75,9 @@ class SearchCriminalsView(APIView):
         suspects_data = []
         for suspect in potential_suspects:
             data = models.CriminalsData.objects.get(iin=suspect.iin)
+            image_data = data.picture.read()
+            encoded_image_data = base64.b64encode(image_data).decode('utf-8')
+
             suspects_data.append(
                 {
                     'First Name': data.first_name,
@@ -82,11 +86,10 @@ class SearchCriminalsView(APIView):
                     'Martial Status': data.martial_status,
                     'Offence': data.offence,
                     'Zip Code': data.zip_code,
-                    'Image': data.picture
+                    'Image': encoded_image_data
                 }
             )
 
-        logger.info(suspects_data)
         return JsonResponse(ujson.dumps(suspects_data))
 
 
