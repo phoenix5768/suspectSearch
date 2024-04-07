@@ -1,6 +1,5 @@
 import os
 from PIL import Image
-from app.sketch.ml import feature_extraction as fe
 from sklearn.linear_model import LinearRegression
 from sklearn.feature_extraction import DictVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
@@ -10,6 +9,7 @@ from sklearn.preprocessing import MinMaxScaler
 from sklearn.neighbors import NearestNeighbors
 import numpy
 from loguru import logger
+from sketch import models
 
 
 # Current idea of a search algorithm
@@ -85,6 +85,9 @@ def knn(new_obj, initial_objs, threshold=0.1, num_results=1):
 
 def search_criminal(data: dict) -> list:
     result = []
-
+    logger.info(data)
+    criminals = models.CriminalsImage.objects.all()
+    for criminal in criminals:
+        logger.info(criminal.iin)
 
     return result
