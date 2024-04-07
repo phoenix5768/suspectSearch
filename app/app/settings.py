@@ -29,7 +29,7 @@ SECRET_KEY = 'django-insecure-v6t5u!7^@o3rl97-94ec7t)^a%d)b#j!fp^2z5pucqd6t%-(d7
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['.vercel.app']
 
 DB_HOST = os.getenv('DB_HOST', 'db')
 DB_HOST = 'gateway01.us-west-2.prod.aws.tidbcloud.com'

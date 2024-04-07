@@ -110,12 +110,12 @@ class GetCriminalsView(APIView):
                     'iin': criminal.iin,
                     'maritalStatus': criminal.martial_status,
                     'offense': criminal.offence,
-                    'zipCode': criminal.zip_code,
-                    'image': encoded_image_data
+                    'zipCode': criminal.zip_code
                 }
             )
 
         resp = ujson.dumps(response)
+        logger.info(resp)
 
         return JsonResponse(resp, safe=False)
 
