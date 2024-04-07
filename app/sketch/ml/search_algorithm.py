@@ -85,9 +85,17 @@ def knn(new_obj, initial_objs, threshold=0.1, num_results=1):
 
 def search_criminal(data: dict) -> list:
     result = []
-    logger.info(data)
+    initial_objs = []
+    iins = []
+
     criminals = models.CriminalsImage.objects.all()
     for criminal in criminals:
-        logger.info(criminal.iin)
+        initial_objs.append(json.loads(criminal.normalized_feature))
+        iins.append(criminal.iin)
+
+    potential_suspects = knn(data, initial_objs, threshold=0.4, num_results=3)
+
+    for suspect in potential_suspects:
+        result.append(iins[suspect[0]])
 
     return result

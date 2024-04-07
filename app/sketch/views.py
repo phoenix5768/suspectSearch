@@ -7,7 +7,8 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.http import JsonResponse, HttpResponseRedirect, HttpResponse, HttpRequest
 from django.contrib.auth.decorators import user_passes_test
-from .forms import PolicemanForm, CriminalsImageForm
+
+from . import models
 from .models import CriminalsData
 from sketch.ml import feature_extraction as fe
 from sketch.handlers import criminals_handler as ch
@@ -15,7 +16,6 @@ from loguru import logger
 from django.db.models import QuerySet, Q
 from sketch.ml import search_algorithm as sa
 
-from . serializer import *
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.views.decorators.csrf import csrf_exempt
@@ -69,8 +69,25 @@ class SearchCriminalsView(APIView):
             'lips_size': request_data.get('mouth')
         }
 
-        response = sa.search_criminal(search_dict)
-        return JsonResponse(ujson.dumps(response))
+        potential_suspects = sa.search_criminal(search_dict)
+
+        suspects_data = []
+        for suspect in potential_suspects:
+            data = models.CriminalsData.objects.get(iin=suspect.iin)
+            suspects_data.append(
+                {
+                    'First Name': data.first_name,
+                    'Last Name': data.last_name,
+                    'IIN': data.iin,
+                    'Martial Status': data.martial_status,
+                    'Offence': data.offence,
+                    'Zip Code': data.zip_code,
+                    'Image': data.picture
+                }
+            )
+
+        logger.info(suspects_data)
+        return JsonResponse(ujson.dumps(suspects_data))
 
 
 
