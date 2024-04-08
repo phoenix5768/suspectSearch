@@ -1,5 +1,7 @@
 import base64
 import json
+import os
+
 import ujson
 
 from django.shortcuts import render, redirect, HttpResponse
@@ -22,6 +24,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from django.views.decorators.csrf import csrf_exempt
 
+from app import settings
+
 
 def admin_login_view(request):
     # Logic for admin login page
@@ -37,7 +41,7 @@ class CriminalsDataView(APIView):
         criminal = ch.criminal_detail_import(request_data)
 
         # finding facial metrics and importing them into DB
-        face_detials = fe.Mesh(f'/home/phoenix/education/SeniorProject/suspectSearch/app{criminal.picture.url}')
+        face_detials = fe.Mesh(os.path.join(settings.BASE_DIR, criminal.picture.url[1:]))
         image_details = ch.image_detail_import(criminal.iin, face_detials)
 
         # creating normalized feature vector
@@ -92,7 +96,7 @@ class SearchCriminalsView(APIView):
                 }
             )
 
-        return JsonResponse(ujson.dumps(suspects_data), safe=False)
+        return JsonResponse(suspects_data, safe=False)
 
 
 class GetCriminalsView(APIView):
@@ -100,6 +104,7 @@ class GetCriminalsView(APIView):
     def get(self, request):
         response = []
         data = models.CriminalsData.objects.all()
+
         for criminal in data:
             image_data = criminal.picture.read()
             encoded_image_data = base64.b64encode(image_data).decode('utf-8')
@@ -115,29 +120,9 @@ class GetCriminalsView(APIView):
                 }
             )
 
-        resp = ujson.dumps(response)
-        logger.info(resp)
-
-        return JsonResponse(resp, safe=False)
+        return JsonResponse(response, safe=False)
 
 
-def import_criminals(request):
-    if request.method == "POST":
-        form = CriminalsDataForm(request.POST, request.FILES)
-        if form.is_valid():
-            form_data = form.cleaned_data
-            iin = form_data.get('iin')
-            form.save()
-
-            criminal = CriminalsData.objects.get(iin=iin)
-            face_detials = fe.Mesh(f'/home/phoenix/senior-project/app{criminal.picture.url}')
-            ch.image_detail_import(iin, face_detials)
-            messages.success(request, 'success')
-            return redirect('cry')
-    else:
-        form = CriminalsDataForm()
-
-    return render(request, 'import_criminals.html', {'form': form})
 
 
 

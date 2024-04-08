@@ -170,6 +170,6 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# CSRF_TRUSTED_ORIGINS = ['https://csci-409-sketch-generation.netlify.app']
+CSRF_TRUSTED_ORIGINS = ['https://csci-409-sketch-generation.netlify.app']
 # CSRF_COOKIE_SECURE = True
-# CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = True
