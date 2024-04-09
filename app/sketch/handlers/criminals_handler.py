@@ -27,7 +27,8 @@ def criminal_detail_import(request_data: dict):
         dob=request_data.get('dob'),
         martial_status=request_data.get('maritalStatus'),
         offence=request_data.get('offense'),
-        zip_code=request_data.get('zipCode')
+        zip_code=request_data.get('zipCode'),
+        gender=request_data.get('gender')
     )
 
     criminal_data.picture.save(file_name, data, save=True)

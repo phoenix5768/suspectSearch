@@ -95,9 +95,6 @@ class GetCriminalsView(APIView):
         data = models.CriminalsData.objects.all()
 
         for criminal in data:
-            logger.info(os.path.join(settings.BASE_DIR, criminal.picture.url[1:]))
-            face_detials = fe.Mesh(os.path.join(settings.BASE_DIR, criminal.picture.url[1:]))
-            logger.info(face_detials)
             response.append(
                 {
                     'firstName': criminal.first_name,
