@@ -100,6 +100,7 @@ class GetCriminalsView(APIView):
                     'firstName': criminal.first_name,
                     'lastName': criminal.last_name,
                     'iin': criminal.iin,
+                    'gender': criminal.gender,
                     'maritalStatus': criminal.martial_status,
                     'offense': criminal.offence,
                     'zipCode': criminal.zip_code,
@@ -108,6 +109,13 @@ class GetCriminalsView(APIView):
             )
 
         return JsonResponse(response, safe=False)
+
+
+class SearchByText(APIView):
+    @csrf_exempt
+    def post(self, request):
+        
+        return JsonResponse()
 
 
 
