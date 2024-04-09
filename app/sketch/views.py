@@ -91,7 +91,7 @@ class SearchCriminalsView(APIView):
                     'maritalStatus': data.martial_status,
                     'offense': data.offence,
                     'zipCode': data.zip_code,
-                    'image': data.picture.url
+                    'image': f'suspectsearch.pythonanywhere.com{data.picture.url}'
                 }
             )
 
