@@ -81,7 +81,7 @@ class SearchCriminalsView(APIView):
         suspects_data = []
         for suspect in potential_suspects:
             data = models.CriminalsData.objects.get(iin=suspect.iin)
-            logger.info(os.path.join(settings.BASE_DIR, data.picture.url))
+            logger.info(f'https://suspectsearch.pythonanywhere.com{data.picture.url}')
 
             suspects_data.append(
                 {
@@ -91,7 +91,7 @@ class SearchCriminalsView(APIView):
                     'maritalStatus': data.martial_status,
                     'offense': data.offence,
                     'zipCode': data.zip_code,
-                    'image': f'suspectsearch.pythonanywhere.com{data.picture.url}'
+                    'image': f'https://suspectsearch.pythonanywhere.com{data.picture.url}'
                 }
             )
 
