@@ -81,8 +81,7 @@ class SearchCriminalsView(APIView):
         suspects_data = []
         for suspect in potential_suspects:
             data = models.CriminalsData.objects.get(iin=suspect.iin)
-            image_data = data.picture.read()
-            encoded_image_data = base64.b64encode(image_data).decode('utf-8')
+            logger.info(data.picture.url)
 
             suspects_data.append(
                 {
@@ -92,7 +91,7 @@ class SearchCriminalsView(APIView):
                     'maritalStatus': data.martial_status,
                     'offense': data.offence,
                     'zipCode': data.zip_code,
-                    'image': encoded_image_data
+                    'image': data.picture.url
                 }
             )
 
@@ -116,7 +115,8 @@ class GetCriminalsView(APIView):
                     'iin': criminal.iin,
                     'maritalStatus': criminal.martial_status,
                     'offense': criminal.offence,
-                    'zipCode': criminal.zip_code
+                    'zipCode': criminal.zip_code,
+                    'image': encoded_image_data
                 }
             )
 
