@@ -47,18 +47,9 @@ class CriminalsDataView(APIView):
         # creating normalized feature vector
         ch.normalized_feature_array(image_details)
 
-        resp = {
-            'iin': request_data.get('iin'),
-            'firstName': request_data.get('firstName'),
-            'lastName': request_data.get('lastName'),
-            'dob': request_data.get('dob'),
-            'maritalStatus': request_data.get('maritalStatus'),
-            'offense': request_data.get('offense'),
-            'zipCode': request_data.get('zipCode'),
-            'picture': request_data.get('picture')
-        }
+        logger.info(face_detials)
 
-        return JsonResponse(resp, safe=False)
+        return JsonResponse(face_detials, safe=False)
 
 
 class SearchCriminalsView(APIView):
@@ -81,7 +72,6 @@ class SearchCriminalsView(APIView):
         suspects_data = []
         for suspect in potential_suspects:
             data = models.CriminalsData.objects.get(iin=suspect.iin)
-            logger.info(f'https://suspectsearch.pythonanywhere.com{data.picture.url}')
 
             suspects_data.append(
                 {
@@ -105,9 +95,9 @@ class GetCriminalsView(APIView):
         data = models.CriminalsData.objects.all()
 
         for criminal in data:
-            image_data = criminal.picture.read()
-            encoded_image_data = base64.b64encode(image_data).decode('utf-8')
-
+            logger.info(os.path.join(settings.BASE_DIR, criminal.picture.url[1:]))
+            face_detials = fe.Mesh(os.path.join(settings.BASE_DIR, criminal.picture.url[1:]))
+            logger.info(face_detials)
             response.append(
                 {
                     'firstName': criminal.first_name,
@@ -116,7 +106,7 @@ class GetCriminalsView(APIView):
                     'maritalStatus': criminal.martial_status,
                     'offense': criminal.offence,
                     'zipCode': criminal.zip_code,
-                    'image': encoded_image_data
+                    'image': f'https://suspectsearch.pythonanywhere.com{criminal.picture.url}'
                 }
             )
 
