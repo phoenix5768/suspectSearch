@@ -81,7 +81,7 @@ class SearchCriminalsView(APIView):
         suspects_data = []
         for suspect in potential_suspects:
             data = models.CriminalsData.objects.get(iin=suspect.iin)
-            logger.info(data.picture.url)
+            logger.info(os.path.join(settings.BASE_DIR, data.picture.url))
 
             suspects_data.append(
                 {
