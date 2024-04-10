@@ -107,6 +107,7 @@ class GetCriminalsView(APIView):
                 {
                     'firstName': criminal.first_name,
                     'lastName': criminal.last_name,
+                    'dob': criminal.dob,
                     'iin': criminal.iin,
                     'gender': criminal.gender,
                     'maritalStatus': criminal.martial_status,
