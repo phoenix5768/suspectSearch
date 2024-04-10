@@ -45,11 +45,19 @@ class CriminalsDataView(APIView):
         image_details = ch.image_detail_import(criminal.iin, face_detials)
 
         # creating normalized feature vector
-        ch.normalized_feature_array(image_details)
+        normalized_dict = ch.normalized_feature_array(image_details)
 
-        logger.info(face_detials)
+        response = {
+            'left_brow_size': normalized_dict['left_brow_size'],
+            'left_eye_size': normalized_dict['left_eye_size'],
+            'lips_size': normalized_dict['lips_size'],
+            'nose_length': normalized_dict['nose_len'],
+            'nose_size': normalized_dict['nose_size'],
+            'right_brow_size': normalized_dict['right_brow_size'],
+            'right_eye_size': normalized_dict['right_eye_size']
+        }
 
-        return JsonResponse(face_detials, safe=False)
+        return JsonResponse(response, safe=False)
 
 
 class SearchCriminalsView(APIView):

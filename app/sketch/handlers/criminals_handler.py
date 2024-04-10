@@ -89,7 +89,7 @@ def image_detail_import(iin: str, data: dict):
     return image_details
 
 
-def normalized_feature_array(image_details: QuerySet):
+def normalized_feature_array(image_details: QuerySet) -> dict:
     """
 
     """
@@ -115,4 +115,4 @@ def normalized_feature_array(image_details: QuerySet):
     image_details.normalized_feature = json.dumps(normalized_dict)
     image_details.save()
 
-    return
+    return normalized_dict
