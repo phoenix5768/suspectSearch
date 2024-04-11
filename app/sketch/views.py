@@ -27,11 +27,6 @@ from django.views.decorators.csrf import csrf_exempt
 from app import settings
 
 
-def admin_login_view(request):
-    # Logic for admin login page
-    return render(request, 'admin_login.html')
-
-
 class CriminalsDataView(APIView):
     @csrf_exempt
     def post(self, request):
@@ -123,49 +118,21 @@ class GetCriminalsView(APIView):
 class SearchByText(APIView):
     @csrf_exempt
     def post(self, request):
-        
-        return JsonResponse()
+        request_data = ujson.loads(request.body.decode('utf-8'))
+        suspects_data = []
+        data = models.CriminalsData.objects.get(iin='000000000001')
 
+        suspects_data.append(
+            {
+                'firstName': data.first_name,
+                'lastName': data.last_name,
+                'iin': data.iin,
+                'maritalStatus': data.martial_status,
+                'offense': data.offence,
+                'zipCode': data.zip_code,
+                'image': f'https://suspectsearch.pythonanywhere.com{data.picture.url}'
+            }
+        )
+        logger.info(suspects_data)
 
-
-
-
-# def admin_inner(request):
-#     if request.method == 'POST':
-#         email = request.POST['email']
-#         password = request.POST['password']
-#         user = authenticate(request, email=email, password=password)
-#         if user is not None and user.is_superuser:
-#             login(request, user)
-#             return render(request, 'admin_inner.html')
-#         else:
-#             return HttpResponse('Unauthorized', status=401)
-#     else:
-#         return render(request, 'admin_inner.html')
-#
-#
-# def police_home(request):
-#     if request.method == 'POST':
-#         username = request.POST['username']
-#         password = request.POST['password']
-#         user = authenticate(request, username=username, password=password)
-#         if user is not None and (not user.is_superuser):
-#             login(request, user)
-#             return render(request, 'police_home.html')
-#         else:
-#             return HttpResponse('Unauthorized', status=401)
-#     else:
-#         return render(request, 'police_home.html')
-#
-#
-# def add_policeman(request):
-#     if request.method == "POST":
-#         form = PolicemanForm(request.POST)
-#         if form.is_valid():
-#             form.save()
-#             messages.success(request, 'Policeman is added successfully')
-#             return redirect('add_policeman')
-#     else:
-#         form = PolicemanForm()
-#     return render(request, 'add_policeman.html', {'form': form})
-#
+        return JsonResponse(suspects_data, safe=False)
