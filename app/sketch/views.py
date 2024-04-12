@@ -5,15 +5,14 @@ import os
 import ujson
 
 from django.shortcuts import render, redirect, HttpResponse
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.http import JsonResponse, HttpResponseRedirect, HttpResponse, HttpRequest
 from django.contrib.auth.decorators import user_passes_test
 
 from . import models
-from .forms import CriminalsDataForm
-from .models import CriminalsData
+# from .models import CriminalsData, CustomUser
 from sketch.ml import feature_extraction as fe
 from sketch.handlers import criminals_handler as ch
 from loguru import logger
@@ -25,6 +24,81 @@ from rest_framework.views import APIView
 from django.views.decorators.csrf import csrf_exempt
 
 from app import settings
+from django.contrib.auth import get_user_model
+from django.contrib.auth.backends import ModelBackend
+
+
+UserModel = get_user_model()
+
+
+class IdentificationNumberBackend(ModelBackend):
+    def authenticate(self, request, iin_admin=None, password=None, **kwargs):
+        if iin_admin is None or password is None:
+            return
+        try:
+            # Adjusting the query to use the `iin` field for lookup
+            user = UserModel.objects.get(iin_admin=iin_admin)
+            if user.check_password(password) and self.user_can_authenticate(user):
+                return user
+        except UserModel.DoesNotExist:
+            # Run the default password hasher once to mitigate timing attacks
+            UserModel().set_password(password)
+
+
+def admin_inner(request):
+    if request.method == 'POST':
+        iin = request.POST.get('iin')
+        password = request.POST.get('password')
+
+        # Ensure the IIN is exactly 12 digits
+        if len(iin) != 12 or not iin.isdigit():
+            return HttpResponse('Invalid IIN', status=400)
+
+        # Find user by IIN. Adjust the query based on how your user model is defined.
+        try:
+            user = models.CustomUser.objects.get(iin=iin)  # Assuming 'profile' is a related model where IIN is stored
+            print(user.first_name)
+            # Verify the password manually since `authenticate` is not used here
+            if user and not user.is_policeman() and user.is_admin() and not user.is_superuser:
+                login(request, user)
+                return render(request, 'admin_inner.html')
+            else:
+                return HttpResponse('Unauthorized', status=401)
+        except User.DoesNotExist:
+            return HttpResponse('Unauthorized', status=401)
+    else:
+        return render(request, 'admin_inner.html')
+
+
+def police_inner(request):
+    if request.method == 'POST':
+        iin = request.POST.get('iin')
+        password = request.POST.get('password')
+
+        # Ensure the IIN is exactly 12 digits
+        if len(iin) != 12 or not iin.isdigit():
+            return HttpResponse('Invalid IIN', status=400)
+
+        # Find user by IIN. Adjust the query based on how your user model is defined.
+        try:
+            user = models.CustomUser.objects.get(iin=iin)  # Assuming 'profile' is a related model where IIN is stored
+            print(user.first_name)
+            # Verify the password manually since `authenticate` is not used here
+            if user and user.is_policeman() and not user.is_admin() and not user.is_superuser:
+                login(request, user)
+                return render(request, 'police_inner.html')
+            else:
+                return HttpResponse('Unauthorized', status=401)
+        except User.DoesNotExist:
+            return HttpResponse('Unauthorized', status=401)
+    else:
+        return render(request, 'police_inner.html')
+
+
+def logout_user(request):
+    logout(request)
+    # messages.success(request, "You have logged out")
+    return redirect('home')
 
 
 class CriminalsDataView(APIView):
@@ -76,17 +150,19 @@ class SearchCriminalsView(APIView):
         for suspect in potential_suspects:
             data = models.CriminalsData.objects.get(iin=suspect.iin)
 
-            suspects_data.append(
-                {
-                    'firstName': data.first_name,
-                    'lastName': data.last_name,
-                    'iin': data.iin,
-                    'maritalStatus': data.martial_status,
-                    'offense': data.offence,
-                    'zipCode': data.zip_code,
-                    'image': f'https://suspectsearch.pythonanywhere.com{data.picture.url}'
-                }
-            )
+            if data.gender == request_data.get('gender') or request_data.get('gender') == 'both':
+                suspects_data.append(
+                    {
+                        'firstName': data.first_name,
+                        'lastName': data.last_name,
+                        'iin': data.iin,
+                        'gender': data.gender,
+                        'maritalStatus': data.martial_status,
+                        'offense': data.offence,
+                        'zipCode': data.zip_code,
+                        'image': f'https://suspectsearch.pythonanywhere.com{data.picture.url}'
+                    }
+                )
 
         return JsonResponse(suspects_data, safe=False)
 

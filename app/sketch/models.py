@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 
 class CriminalsData(models.Model):
@@ -39,38 +40,29 @@ class CriminalsImage(models.Model):
         return self.iin.first_name + ' ' + self.iin.last_name
 
 
-class Policeman(models.Model):
+class CustomUser(AbstractUser):
     first_name = models.CharField(max_length=128)
     last_name = models.CharField(max_length=128)
     iin = models.CharField(primary_key=True, max_length=64)
-    dob = models.DateField()
-    department = models.CharField(max_length=256)
-    badge_number = models.CharField(max_length=256)
-    email = models.CharField(max_length=256)
-    username = models.CharField(max_length=256)
-    password = models.CharField(verbose_name='Password', max_length=256)
+    dob = models.DateField(null=True, blank=True)
+    department = models.CharField(max_length=256, null=True, blank=True)
+    badge_number = models.CharField(max_length=256, null=True, blank=True)
+    role = models.CharField(max_length=256)
+
+    def is_policeman(self):
+        return self.role == "policeman"
+
+    def is_admin(self):
+        return self.role == "admin"
 
     def __str__(self):
         return self.first_name + ' ' + self.last_name
 
 
-class Admin(models.Model):
-    first_name = models.CharField(max_length=128)
-    last_name = models.CharField(max_length=128)
-    iin = models.CharField(primary_key=True, max_length=64)
-    email = models.CharField(max_length=256)
-    #username = models.CharField(max_length=256)
-    password = models.CharField(verbose_name='Password', max_length=256)
-
-    def __str__(self):
-        return self.first_name + ' ' + self.last_name
-
-
-class Logs(models.Model):
-    admin_logs = models.ForeignKey(Admin, on_delete=models.CASCADE)
-    policeman_logs = models.ForeignKey(Policeman, on_delete=models.CASCADE)
-    action_time = models.DateTimeField(editable=False, null=True, blank=True)
-    action = models.TextField(null=True, blank=True)
+# class Logs(models.Model):
+#     user_logs = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+#     action_time = models.DateTimeField(editable=False, null=True, blank=True)
+#     action = models.TextField(null=True, blank=True)
 
 
 class MaxMin(models.Model):

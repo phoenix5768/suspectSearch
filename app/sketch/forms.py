@@ -1,21 +1,31 @@
+# forms.py
 from django import forms
-from .models import Policeman, CriminalsData
+from django.contrib.auth.forms import UserCreationForm, UserChangeForm
+from .models import CustomUser
 
 
-class CriminalsDataForm(forms.ModelForm):
+class CustomUserChangeForm(UserChangeForm):
     class Meta:
-        model = CriminalsData
-        fields = ['iin', 'first_name', 'last_name', 'dob', 'martial_status', 'offence', 'zip_code', 'picture']
-        widgets = {
-            'dob': forms.DateInput(attrs={'type': 'date'})
-        }
+        model = CustomUser
+        fields = ('iin', 'first_name', 'last_name', 'dob', 'department', 'badge_number', 'role')
 
 
-class PolicemanForm(forms.ModelForm):
-    class Meta:
-        model = Policeman
-        fields = ['first_name', 'last_name', 'iin', 'dob', 'department', 'badge_number', 'email', 'password']
-        widgets = {
-            'password': forms.PasswordInput(),
-            'date_of_birth': forms.DateInput(attrs={'type': 'date'}),
-        }
+class CustomUserCreationForm(UserCreationForm):
+    model = CustomUser
+    plaintext_password = forms.CharField(widget=forms.PasswordInput(), required=False)
+    fields = ('iin', 'first_name', 'last_name', 'dob', 'department', 'badge_number', 'role')
+
+    class Meta(UserCreationForm.Meta):
+        model = CustomUser
+        fields = UserCreationForm.Meta.fields + ('plaintext_password',)
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        if self.cleaned_data["plaintext_password"]:
+            # This is where you handle the plaintext password for demonstration purposes
+            # For example, temporarily storing it to show in the admin interface or logging it securely
+            # Ensure this is done securely and is compliant with your security policy
+            pass
+        if commit:
+            user.save()
+        return user
