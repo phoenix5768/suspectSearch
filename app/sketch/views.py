@@ -228,7 +228,7 @@ class AddPoliceman(APIView):
             username=request_data.get('iin')
         )
 
-        return JsonResponse('saved')
+        return JsonResponse('saved', safe=False)
 
 
 class Login(APIView):
@@ -245,9 +245,9 @@ class Login(APIView):
             return JsonResponse({
                 'role': user.role,
                 'name': f'{user.first_name} {user.last_name}'
-            }, status=200)
+            }, status=200, safe=False)
         else:
-            return JsonResponse('Unauthorized', status=401)
+            return JsonResponse('Unauthorized', status=401, safe=False)
 
 
 class EditCriminal(APIView):
@@ -276,9 +276,9 @@ class EditCriminal(APIView):
                 image_details = ch.image_detail_import(criminal.iin, face_detials)
 
             criminal.save()
-            return JsonResponse('Updated', status=200)
+            return JsonResponse('Updated', status=200, safe=False)
         except:
-            return JsonResponse('Not found', status=404)
+            return JsonResponse('Not found', status=404, safe=False)
 
 
 class DeleteCriminal(APIView):
@@ -286,9 +286,9 @@ class DeleteCriminal(APIView):
         request_data = ujson.loads(request.body.decode('utf-8'))
         try:
             models.CriminalsData.objects.get(iin=request_data.get('iin'))
-            return JsonResponse('deleted', status=200)
+            return JsonResponse('deleted', status=200, safe=False)
         except:
-            return JsonResponse('Not found', status=404)
+            return JsonResponse('Not found', status=404, safe=False)
 
 
 class GetUsers(APIView):
@@ -328,9 +328,9 @@ class EditUsers(APIView):
             user.password = request_data.get('password')
 
             user.save()
-            return JsonResponse('Updated', status=200)
+            return JsonResponse('Updated', status=200, safe=False)
         except:
-            return JsonResponse('Not found', status=404)
+            return JsonResponse('Not found', status=404, safe=False)
 
 
 class DeleteUsers(APIView):
@@ -338,6 +338,6 @@ class DeleteUsers(APIView):
         request_data = ujson.loads(request.body.decode('utf-8'))
         try:
             models.CustomUser.objects.get(iin=request_data.get('iin'))
-            return JsonResponse('deleted', status=200)
+            return JsonResponse('deleted', status=200, safe=False)
         except:
-            return JsonResponse('Not found', status=404)
+            return JsonResponse('Not found', status=404, safe=False)
