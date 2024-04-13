@@ -220,7 +220,7 @@ class AddPoliceman(APIView):
         request_data = ujson.loads(request.body.decode('utf-8'))
 
         temp = models.CustomUser.objects.create(
-            iin=request.get('iin'),
+            iin=request_data.get('iin'),
             first_name=request_data.get('first_name'),
             last_name=request_data.get('last_name'),
             dob=request_data.get('dob'),
