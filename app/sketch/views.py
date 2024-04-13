@@ -219,4 +219,19 @@ class AddPoliceman(APIView):
     def post(self, request):
         request_data = ujson.loads(request.body.decode('utf-8'))
 
-        logger.info(request_data)
+        temp = models.CustomUser.objects.create(
+            iin=request.get('iin'),
+            first_name=request_data.get('first_name'),
+            last_name=request_data.get('last_name'),
+            dob=request_data.get('dob'),
+            department=request_data.get('department'),
+            badge_number=request_data.get('badge_number', '1'),
+            role=request_data.get('role'),
+            password=request_data.get('password'),
+            username=request_data.get('iin')
+        )
+
+        logger.info(temp)
+
+        return JsonResponse()
+
