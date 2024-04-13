@@ -75,7 +75,7 @@ def image_detail_import(iin: str, data: dict):
         min_values.lips_size = float(data['lips_size'])
     min_values.save()
 
-    image_details = models.CriminalsImage.objects.create(
+    image_details = models.CriminalsImage.objects.update_or_create(
         iin=models.CriminalsData.objects.get(iin=iin),
         nose_len=data['nose_length'],
         right_brow_size=data['right_brow_size'],

@@ -25,6 +25,7 @@ from django.views.decorators.csrf import csrf_exempt
 from app import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
+from django.core.files.base import ContentFile
 
 
 UserModel = get_user_model()
@@ -247,3 +248,96 @@ class Login(APIView):
             }, status=200)
         else:
             return JsonResponse('Unauthorized', status=401)
+
+
+class EditCriminal(APIView):
+    def post(self, request):
+        request_data = ujson.loads(request.body.decode('utf-8'))
+        try:
+            criminal = models.CriminalsData.objects.get(iin=request_data.get('iin'))
+            criminal.first_name = request_data.get('firstName')
+            criminal.last_name = request_data.get('lastName')
+            criminal.gender = request_data.get('gender')
+            criminal.dob = request_data.get('dob')
+            criminal.martial_status = request_data.get('maritalStatus')
+            criminal.offence = request_data.get('offense')
+            criminal.zip_code = request_data.get('zipCode')
+
+            if request_data.get('image') is not None:
+                image_data = request_data.get('image')
+                format, imgstr = image_data.split(';base64,')
+                ext = format.split('/')[-1]
+
+                data = ContentFile(base64.b64decode(imgstr))
+                file_name = f"{str(request_data.get('iin'))}." + ext
+                criminal.picture.save(file_name, data, save=True)
+
+                face_detials = fe.Mesh(os.path.join(settings.BASE_DIR, criminal.picture.url[1:]))
+                image_details = ch.image_detail_import(criminal.iin, face_detials)
+
+            criminal.save()
+            return JsonResponse('Updated', status=200)
+        except:
+            return JsonResponse('Not found', status=404)
+
+
+class DeleteCriminal(APIView):
+    def post(self, request):
+        request_data = ujson.loads(request.body.decode('utf-8'))
+        try:
+            models.CriminalsData.objects.get(iin=request_data.get('iin'))
+            return JsonResponse('deleted', status=200)
+        except:
+            return JsonResponse('Not found', status=404)
+
+
+class GetUsers(APIView):
+    @csrf_exempt
+    def get(self, request):
+        response = []
+        data = models.CustomUser.objects.all()
+
+        for user in data:
+            response.append(
+                {
+                    'first_name': user.first_name,
+                    'last_name': user.last_name,
+                    'iin': user.iin,
+                    'dob': user.dob,
+                    'department': user.department,
+                    'badge_number': user.badge_number,
+                    'role': user.role,
+                    'password': user.password
+                }
+            )
+
+        return JsonResponse(response, safe=False)
+
+
+class EditUsers(APIView):
+    def post(self, request):
+        request_data = ujson.loads(request.body.decode('utf-8'))
+        try:
+            user = models.CustomUser.objects.get(iin=request_data.get('iin'))
+            user.first_name = request_data.get('first_name')
+            user.last_name = request_data.get('last_name')
+            user.dob = request_data.get('dob')
+            user.department = request_data.get('department')
+            user.badge_number = request_data.get('badge_number')
+            user.role = request_data.get('role')
+            user.password = request_data.get('password')
+
+            user.save()
+            return JsonResponse('Updated', status=200)
+        except:
+            return JsonResponse('Not found', status=404)
+
+
+class DeleteUsers(APIView):
+    def post(self, request):
+        request_data = ujson.loads(request.body.decode('utf-8'))
+        try:
+            models.CustomUser.objects.get(iin=request_data.get('iin'))
+            return JsonResponse('deleted', status=200)
+        except:
+            return JsonResponse('Not found', status=404)

@@ -59,12 +59,6 @@ class CustomUser(AbstractUser):
         return self.first_name + ' ' + self.last_name
 
 
-# class Logs(models.Model):
-#     user_logs = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
-#     action_time = models.DateTimeField(editable=False, null=True, blank=True)
-#     action = models.TextField(null=True, blank=True)
-
-
 class MaxMin(models.Model):
     func_name = models.CharField(verbose_name='Max or Min', max_length=32, default='max')
     nose_len = models.FloatField(default=0)
