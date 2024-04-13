@@ -12,7 +12,6 @@ from django.http import JsonResponse, HttpResponseRedirect, HttpResponse, HttpRe
 from django.contrib.auth.decorators import user_passes_test
 
 from . import models
-# from .models import CriminalsData, CustomUser
 from sketch.ml import feature_extraction as fe
 from sketch.handlers import criminals_handler as ch
 from loguru import logger
@@ -32,12 +31,12 @@ UserModel = get_user_model()
 
 
 class IdentificationNumberBackend(ModelBackend):
-    def authenticate(self, request, iin_admin=None, password=None, **kwargs):
-        if iin_admin is None or password is None:
+    def authenticate(self, request, iin=None, password=None, **kwargs):
+        if iin is None or password is None:
             return
         try:
             # Adjusting the query to use the `iin` field for lookup
-            user = UserModel.objects.get(iin_admin=iin_admin)
+            user = UserModel.objects.get(iin=iin)
             if user.check_password(password) and self.user_can_authenticate(user):
                 return user
         except UserModel.DoesNotExist:
@@ -54,20 +53,19 @@ def admin_inner(request):
         if len(iin) != 12 or not iin.isdigit():
             return HttpResponse('Invalid IIN', status=400)
 
-        # Find user by IIN. Adjust the query based on how your user model is defined.
         try:
-            user = models.CustomUser.objects.get(iin=iin)  # Assuming 'profile' is a related model where IIN is stored
-            print(user.first_name)
+            user = authenticate(request, iin=iin, password=password)
+
             # Verify the password manually since `authenticate` is not used here
             if user and not user.is_policeman() and user.is_admin() and not user.is_superuser:
                 login(request, user)
                 return render(request, 'admin_inner.html')
             else:
-                return HttpResponse('Unauthorized', status=401)
+                return JsonResponse('Unauthorized', status=401)
         except User.DoesNotExist:
-            return HttpResponse('Unauthorized', status=401)
+            return JsonResponse('Unauthorized', status=401)
     else:
-        return render(request, 'admin_inner.html')
+        return JsonResponse('Method not allower', status=405)
 
 
 def police_inner(request):
@@ -79,11 +77,9 @@ def police_inner(request):
         if len(iin) != 12 or not iin.isdigit():
             return HttpResponse('Invalid IIN', status=400)
 
-        # Find user by IIN. Adjust the query based on how your user model is defined.
         try:
-            user = models.CustomUser.objects.get(iin=iin)  # Assuming 'profile' is a related model where IIN is stored
-            print(user.first_name)
-            # Verify the password manually since `authenticate` is not used here
+            user = authenticate(request, iin=iin, password=password)
+
             if user and user.is_policeman() and not user.is_admin() and not user.is_superuser:
                 login(request, user)
                 return render(request, 'police_inner.html')
@@ -97,8 +93,8 @@ def police_inner(request):
 
 def logout_user(request):
     logout(request)
-    # messages.success(request, "You have logged out")
-    return redirect('home')
+
+    return JsonResponse('logged out')
 
 
 class CriminalsDataView(APIView):
@@ -231,7 +227,23 @@ class AddPoliceman(APIView):
             username=request_data.get('iin')
         )
 
-        logger.info(temp)
+        return JsonResponse('saved')
 
-        return JsonResponse()
 
+class Login(APIView):
+    @csrf_exempt
+    def post(self, request):
+        request_data = ujson.loads(request.body.decode('utf-8'))
+
+        user = models.CustomUser.objects.get(
+            iin=request_data.get('iin'),
+            password=request_data.get('password')
+        )
+
+        if user:
+            return JsonResponse({
+                'role': user.role,
+                'name': f'{user.first_name} {user.last_name}'
+            }, status=200)
+        else:
+            return JsonResponse('Unauthorized', status=401)
