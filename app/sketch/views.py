@@ -212,3 +212,11 @@ class SearchByText(APIView):
         logger.info(suspects_data)
 
         return JsonResponse(suspects_data, safe=False)
+
+
+class AddPoliceman(APIView):
+    @csrf_exempt
+    def post(self, request):
+        request_data = ujson.loads(request.body.decode('utf-8'))
+
+        logger.info(request_data)
