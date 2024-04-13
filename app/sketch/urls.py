@@ -11,6 +11,6 @@ urlpatterns = [
     path('admin_inner/', admin_inner, name='admin_inner'),
     path('police_inner/', police_inner, name='police_inner'),
     path('logout/', logout_user, name='logout'),
-    path('login/', Login.as_view, name='login')
+    path('signin/', Login.as_view(), name='signin')
 
 ]
