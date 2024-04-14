@@ -273,7 +273,7 @@ class EditCriminal(APIView):
                 criminal.picture.save(file_name, data, save=True)
 
                 face_detials = fe.Mesh(os.path.join(settings.BASE_DIR, criminal.picture.url[1:]))
-                image_details = ch.image_detail_import(criminal.iin, face_detials)
+                ch.update_criminal(criminal.iin, face_detials)
 
             criminal.save()
             return JsonResponse('Updated', status=200, safe=False)

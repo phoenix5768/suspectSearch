@@ -37,7 +37,7 @@ def criminal_detail_import(request_data: dict):
     return criminal_data
 
 
-def image_detail_import(iin: str, data: dict):
+def updating_minmax(data:dict):
     """
 
     """
@@ -74,6 +74,15 @@ def image_detail_import(iin: str, data: dict):
     if min_values.lips_size > float(data['lips_size']) != 0:
         min_values.lips_size = float(data['lips_size'])
     min_values.save()
+
+    return
+
+
+def image_detail_import(iin: str, data: dict):
+    """
+
+    """
+    updating_minmax(data=data)
 
     image_details, created = models.CriminalsImage.objects.update_or_create(
         iin=models.CriminalsData.objects.get(iin=iin),
@@ -116,3 +125,22 @@ def normalized_feature_array(image_details: QuerySet) -> dict:
     image_details.save()
 
     return normalized_dict
+
+
+def update_criminal(iin: str, data: dict):
+    """
+
+    """
+    updating_minmax(data=data)
+
+    image_details = models.CriminalsImage.objects.get(iin=iin)
+    image_details.nose_len = data['nose_length']
+    image_details.lips_size = data['lips_size']
+    image_details.nose_size = data['nose_size']
+    image_details.left_brow_size = data['left_brow_size']
+    image_details.left_eye_size = data['left_eye_size']
+    image_details.right_brow_size = data['right_brow_size']
+    image_details.right_eye_size = data['right_eye_size']
+
+    image_details.save()
+    normalized_dict = normalized_feature_array(image_details)
