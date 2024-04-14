@@ -26,6 +26,7 @@ from app import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
 from django.core.files.base import ContentFile
+import time
 
 
 UserModel = get_user_model()
@@ -325,7 +326,7 @@ class GetUsers(APIView):
                     gender=rd.get('gender')
                 )
 
-                with open(f'{directory}/{filename}' 'rb') as f:
+                with open(f"{directory}/{filename}", 'rb') as f:
                     image_data = f.read()
 
                 file_name = f"{str(rd.get('iin'))}.jpeg"
@@ -338,6 +339,7 @@ class GetUsers(APIView):
                 normalized_dict = ch.normalized_feature_array(image_details)
                 logger.info('saved')
                 counter += 1
+                time.sleep(1)
 
 
         for user in data:
