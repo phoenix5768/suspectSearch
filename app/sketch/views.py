@@ -301,7 +301,7 @@ class GetUsers(APIView):
         data = models.CustomUser.objects.all()
         counter = 10
         rd = {}
-        directory = f'{settings.BASE_DIR}/media/men'
+        directory = f'{settings.BASE_DIR}/media/women'
         for filename in os.listdir(directory):
             if filename.endswith('.jpg') or filename.endswith('.png'):
                 face_detials = fe.Mesh(f'{directory}/{filename}')
@@ -314,7 +314,7 @@ class GetUsers(APIView):
                     'maritalStatus': woman['martial_status'],
                     'offense': woman['offense'],
                     'zipCode': woman['zip_code'],
-                    'gender': 'male'
+                    'gender': 'female'
                 }
 
                 criminal_data = models.CriminalsData.objects.create(
