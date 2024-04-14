@@ -301,7 +301,7 @@ class GetUsers(APIView):
         data = models.CustomUser.objects.all()
         counter = 10
         rd = {}
-        directory = f'{settings.BASE_DIR}/media/women'
+        directory = f'{settings.BASE_DIR}/media/women2'
         for filename in os.listdir(directory):
             if filename.endswith('.jpg') or filename.endswith('.png'):
                 face_detials = fe.Mesh(f'{directory}/{filename}')
