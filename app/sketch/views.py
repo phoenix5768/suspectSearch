@@ -1,6 +1,8 @@
 import base64
 import json
 import os
+import io
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
 import ujson
 
@@ -333,7 +335,12 @@ class GetUsers(APIView):
                 logger.info(image_data)
                 file_name = f"{str(rd.get('iin'))}.jpeg"
                 logger.info(file_name)
-                criminal_data.picture.save(file_name, image_data, save=True)
+
+                image_file = io.BytesIO(image_data)
+                uploaded_file = InMemoryUploadedFile(image_file, None, file_name, 'image/jpeg', len(image_data),
+                                                     None)
+
+                criminal_data.picture.save(file_name, uploaded_file, save=True)
                 criminal_data.save()
 
                 image_details = ch.image_detail_import(rd.get('iin'), face_detials)
