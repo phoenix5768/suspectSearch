@@ -297,6 +297,9 @@ class GetUsers(APIView):
         response = []
         data = models.CustomUser.objects.all()
 
+        logger.info(settings.BASE_DIR)
+        logger.info(f'{settings.BASE_DIR}media/men')
+
         for user in data:
             response.append(
                 {
