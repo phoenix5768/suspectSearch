@@ -299,7 +299,7 @@ class GetUsers(APIView):
     def get(self, request):
         response = []
         data = models.CustomUser.objects.all()
-        counter = 200
+        counter = 1000
         rd = {}
         directory = f'{settings.BASE_DIR}/media/men'
         for filename in os.listdir(directory):
