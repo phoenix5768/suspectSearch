@@ -237,6 +237,8 @@ class Login(APIView):
         request_data = ujson.loads(request.body.decode('utf-8'))
         logger.info(request_data)
 
+        logger.info(models.CustomUser.objects.all())
+
         user = models.CustomUser.objects.get(
             iin=request_data.get('iin'),
             password=request_data.get('password')
