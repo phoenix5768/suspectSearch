@@ -327,6 +327,7 @@ class GetUsers(APIView):
                 )
 
                 with open(f"{directory}/{filename}", 'rb') as f:
+                    logger.info(f)
                     image_data = f.read()
 
                 logger.info(image_data)
