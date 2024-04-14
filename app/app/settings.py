@@ -183,7 +183,7 @@ CSRF_TRUSTED_ORIGINS = ['https://csci-409-sketch-generation.netlify.app']
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_HTTPONLY = True
 
-# AUTH_USER_MODEL = 'sketch.CustomUser'
+AUTH_USER_MODEL = 'sketch.CustomUser'
 
 # AUTHENTICATION_BACKENDS = [
 #     'django.contrib.auth.backends.ModelBackend',  # Keep the default backend
