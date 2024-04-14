@@ -4,6 +4,8 @@ from loguru import logger
 from django.core.files.base import ContentFile
 from django.db.models import QuerySet, Q
 import json
+import random
+from datetime import datetime, timedelta
 
 
 def criminal_detail_import(request_data: dict):
@@ -37,7 +39,7 @@ def criminal_detail_import(request_data: dict):
     return criminal_data
 
 
-def updating_minmax(data:dict):
+def updating_minmax(data: dict):
     """
 
     """
@@ -145,9 +147,6 @@ def update_criminal(iin: str, data: dict):
     image_details.save()
     normalized_dict = normalized_feature_array(image_details)
 
-
-import random
-from datetime import datetime, timedelta
 
 # Function to generate random date of birth
 def generate_dob():

@@ -313,7 +313,30 @@ class GetUsers(APIView):
                     'zipCode': woman['zip_code'],
                     'gender': 'female'
                 }
-                logger.info(rd)
+
+                criminal_data = models.CriminalsData.objects.create(
+                    iin=rd.get('iin'),
+                    first_name=rd.get('firstName'),
+                    last_name=rd.get('lastName'),
+                    dob=rd.get('dob'),
+                    martial_status=rd.get('maritalStatus'),
+                    offence=rd.get('offense'),
+                    zip_code=rd.get('zipCode'),
+                    gender=rd.get('gender')
+                )
+
+                with open(f'{directory}/{filename}' 'rb') as f:
+                    image_data = f.read()
+
+                file_name = f"{str(rd.get('iin'))}.jpeg"
+                criminal_data.picture.save(file_name, image_data, save=True)
+                criminal_data.save()
+
+                image_details = ch.image_detail_import(rd.get('iin'), face_detials)
+
+                # creating normalized feature vector
+                normalized_dict = ch.normalized_feature_array(image_details)
+                logger.info('saved')
                 counter += 1
 
 
