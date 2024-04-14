@@ -26,6 +26,8 @@ from app import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.backends import ModelBackend
 from django.core.files.base import ContentFile
+from django.db import connections
+from django.db.utils import OperationalError
 
 
 UserModel = get_user_model()
@@ -236,6 +238,14 @@ class Login(APIView):
     def post(self, request):
         request_data = ujson.loads(request.body.decode('utf-8'))
         logger.info(request_data)
+
+        db_conn = connections['default']
+        try:
+            c = db_conn.cursor()
+        except OperationalError:
+            connected = False
+        else:
+            connected = True
 
         logger.info(models.CustomUser.objects.all())
 
