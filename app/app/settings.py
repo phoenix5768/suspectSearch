@@ -94,31 +94,45 @@ WSGI_APPLICATION = 'app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django_tidb',
+#         'HOST': DB_HOST,
+#         'PORT': 4000,
+#         'NAME': DB_NAME,
+#         'USER': DB_USER,
+#         'PASSWORD': DB_PASS,
+#         # 'ssl_mode'="VERIFY_IDENTITY",
+#         # 'ssl'={
+#         #     "ca": "/etc/ssl/certs/ca-certificates.crt"
+#         # },
+#         'OPTIONS': {
+#             # 'sql_mode': 'traditional',
+#             'charset': 'utf8mb4'
+#         },
+#     }
+# }
+
+# TIDB_CA_PATH = "/etc/ssl/certs/ca-certificates.crt"
+# if TIDB_CA_PATH:
+#     DATABASES["default"]["OPTIONS"]["ssl_mode"] = "VERIFY_IDENTITY"
+#     DATABASES["default"]["OPTIONS"]["ssl"] = {
+#         "ca": TIDB_CA_PATH,
+#     }
+
 DATABASES = {
     'default': {
-        'ENGINE': 'django_tidb',
-        'HOST': DB_HOST,
-        'PORT': 4000,
-        'NAME': DB_NAME,
-        'USER': DB_USER,
-        'PASSWORD': DB_PASS,
-        # 'ssl_mode'="VERIFY_IDENTITY",
-        # 'ssl'={
-        #     "ca": "/etc/ssl/certs/ca-certificates.crt"
-        # },
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'SuspectSearch$default',
+        'USER': 'SuspectSearch',
+        'PASSWORD': 'senior-project',
+        'HOST': 'SuspectSearch.mysql.pythonanywhere-services.com',
+        'PORT': '3306',
         'OPTIONS': {
-            # 'sql_mode': 'traditional',
-            'charset': 'utf8mb4'
-        },
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
+        }
     }
 }
-
-TIDB_CA_PATH = "/etc/ssl/certs/ca-certificates.crt"
-if TIDB_CA_PATH:
-    DATABASES["default"]["OPTIONS"]["ssl_mode"] = "VERIFY_IDENTITY"
-    DATABASES["default"]["OPTIONS"]["ssl"] = {
-        "ca": TIDB_CA_PATH,
-    }
 
 
 # Password validation
