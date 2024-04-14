@@ -6,6 +6,11 @@ from django.db.models import QuerySet, Q
 import json
 import random
 from datetime import datetime, timedelta
+import os
+import io
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from app import settings
+from sketch.ml import feature_extraction as fe
 
 
 def criminal_detail_import(request_data: dict):
@@ -200,3 +205,56 @@ def random_generator() -> dict:
     people = {'name': name, 'surname': surname, 'dob': dob, 'martial_status': martial_status, 'offense': offense, 'zip_code': zip_code}
 
     return people
+
+
+def script():
+    counter = 2000
+    rd = {}
+    directory = f'{settings.BASE_DIR}/media/men2'
+    for filename in os.listdir(directory):
+        if filename.endswith('.jpg') or filename.endswith('.png'):
+            face_detials = fe.Mesh(f'{directory}/{filename}')
+            woman = random_generator()
+            rd = {
+                'iin': counter,
+                'firstName': woman['name'],
+                'lastName': woman['surname'],
+                'dob': woman['dob'],
+                'maritalStatus': woman['martial_status'],
+                'offense': woman['offense'],
+                'zipCode': woman['zip_code'],
+                'gender': 'male'
+            }
+
+            criminal_data = models.CriminalsData.objects.create(
+                iin=rd.get('iin'),
+                first_name=rd.get('firstName'),
+                last_name=rd.get('lastName'),
+                dob=rd.get('dob'),
+                martial_status=rd.get('maritalStatus'),
+                offence=rd.get('offense'),
+                zip_code=rd.get('zipCode'),
+                gender=rd.get('gender')
+            )
+
+            with open(f"{directory}/{filename}", 'rb') as f:
+                logger.info(f)
+                image_data = f.read()
+
+            file_name = f"{str(rd.get('iin'))}.jpeg"
+            logger.info(file_name)
+
+            image_file = io.BytesIO(image_data)
+            uploaded_file = InMemoryUploadedFile(image_file, None, file_name, 'image/jpeg', len(image_data),
+                                                 None)
+
+            criminal_data.picture.save(file_name, uploaded_file, save=True)
+            criminal_data.save()
+
+            image_details = image_detail_import(rd.get('iin'), face_detials)
+
+            # creating normalized feature vector
+            normalized_dict = normalized_feature_array(image_details)
+            logger.info('saved')
+            counter += 1
+            # time.sleep(1)
