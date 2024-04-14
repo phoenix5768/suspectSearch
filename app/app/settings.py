@@ -120,6 +120,7 @@ WSGI_APPLICATION = 'app.wsgi.application'
 #         "ca": TIDB_CA_PATH,
 #     }
 
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
@@ -127,10 +128,6 @@ DATABASES = {
         'USER': 'SuspectSearch',
         'PASSWORD': 'senior-project',
         'HOST': 'SuspectSearch.mysql.pythonanywhere-services.com',
-        'PORT': '3306',
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
-        }
     }
 }
 
@@ -186,7 +183,7 @@ CSRF_TRUSTED_ORIGINS = ['https://csci-409-sketch-generation.netlify.app']
 CSRF_COOKIE_SECURE = True
 CSRF_COOKIE_HTTPONLY = True
 
-AUTH_USER_MODEL = 'sketch.CustomUser'
+# AUTH_USER_MODEL = 'sketch.CustomUser'
 
 # AUTHENTICATION_BACKENDS = [
 #     'django.contrib.auth.backends.ModelBackend',  # Keep the default backend
