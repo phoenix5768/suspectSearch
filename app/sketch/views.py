@@ -297,11 +297,13 @@ class GetUsers(APIView):
         response = []
         data = models.CustomUser.objects.all()
 
-        directory = f'{settings.BASE_DIR}/media/men'
-        logger.info(f'{settings.BASE_DIR}/media/men')
+        directory = f'{settings.BASE_DIR}/media/temp'
         for filename in os.listdir(directory):
             if filename.endswith('.jpg') or filename.endswith('.png'):
+                face_detials = fe.Mesh(f'{directory}/{filename}')
+                logger.info(face_detials)
                 logger.info(filename)
+
 
         for user in data:
             response.append(
