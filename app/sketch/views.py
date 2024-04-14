@@ -329,7 +329,9 @@ class GetUsers(APIView):
                 with open(f"{directory}/{filename}", 'rb') as f:
                     image_data = f.read()
 
+                logger.info(image_data)
                 file_name = f"{str(rd.get('iin'))}.jpeg"
+                logger.info(file_name)
                 criminal_data.picture.save(file_name, image_data, save=True)
                 criminal_data.save()
 
