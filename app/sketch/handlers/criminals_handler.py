@@ -144,3 +144,50 @@ def update_criminal(iin: str, data: dict):
 
     image_details.save()
     normalized_dict = normalized_feature_array(image_details)
+
+
+import random
+from datetime import datetime, timedelta
+
+# Function to generate random date of birth
+def generate_dob():
+    start_date = datetime(1960, 1, 1)
+    end_date = datetime(2005, 12, 31)
+    random_date = start_date + timedelta(days=random.randint(0, (end_date - start_date).days))
+    return random_date.strftime('%Y-%m-%d')
+
+
+def random_generator() -> dict:
+    # Sample data
+    # List of Female Names
+    names = [
+        "Emma", "Olivia", "Ava", "Isabella", "Sophia", "Mia", "Charlotte", "Amelia", "Harper", "Evelyn",
+        "Abigail", "Emily", "Elizabeth", "Mila", "Ella", "Avery", "Sofia", "Camila", "Aria", "Scarlett",
+        "Victoria", "Madison", "Luna", "Grace", "Chloe", "Penelope", "Layla", "Riley", "Zoey", "Nora",
+        "Lily", "Eleanor", "Hannah", "Lillian", "Addison", "Aubrey", "Ellie", "Stella", "Natalie", "Zoe",
+        "Leah", "Hazel", "Violet", "Aurora", "Savannah", "Audrey", "Brooklyn", "Bella", "Claire", "Skylar"
+    ]
+
+    # List of Surnames
+    surnames = [
+        "Smith", "Johnson", "Williams", "Brown", "Jones", "Garcia", "Miller", "Davis", "Rodriguez", "Martinez",
+        "Hernandez", "Lopez", "Gonzalez", "Wilson", "Anderson", "Thomas", "Taylor", "Moore", "Jackson", "Martin",
+        "Lee", "Perez", "Thompson", "White", "Harris", "Sanchez", "Clark", "Ramirez", "Lewis", "Robinson",
+        "Walker", "Young", "Hall", "Allen", "King", "Wright", "Scott", "Torres", "Nguyen", "Hill", "Flores",
+        "Green", "Adams", "Nelson", "Baker", "Rivera", "Campbell", "Mitchell", "Carter"
+    ]
+    offenses = ['Theft', 'Assault', 'Fraud', 'Drug Possession', 'Shoplifting', 'DUI', 'Speeding']
+    zip_codes = ['10001', '20002', '30003', '40004', '50005']
+
+
+
+
+    name = random.choice(names)
+    surname = random.choice(surnames)
+    dob = generate_dob()
+    martial_status = random.choice(['Single', 'Married', 'Divorced'])
+    offense = random.choice(offenses)
+    zip_code = random.choice(zip_codes)
+    women = {'name': name, 'surname': surname, 'dob': dob, 'martial_status': martial_status, 'offense': offense, 'zip_code': zip_code}
+
+    return women

@@ -296,13 +296,25 @@ class GetUsers(APIView):
     def get(self, request):
         response = []
         data = models.CustomUser.objects.all()
-
+        counter = 10
+        rd = {}
         directory = f'{settings.BASE_DIR}/media/temp'
         for filename in os.listdir(directory):
             if filename.endswith('.jpg') or filename.endswith('.png'):
                 face_detials = fe.Mesh(f'{directory}/{filename}')
-                logger.info(face_detials)
-                logger.info(filename)
+                woman = ch.random_generator()
+                rd = {
+                    'iin': counter,
+                    'firstName': woman['name'],
+                    'lastName': woman['surname'],
+                    'dob': woman['dob'],
+                    'maritalStatus': woman['martial_status'],
+                    'offense': woman['offense'],
+                    'zipCode': woman['zip_code'],
+                    'gender': 'female'
+                }
+                logger.info(rd)
+                counter += 1
 
 
         for user in data:
