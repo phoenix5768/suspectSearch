@@ -299,9 +299,9 @@ class GetUsers(APIView):
     def get(self, request):
         response = []
         data = models.CustomUser.objects.all()
-        counter = 10
+        counter = 200
         rd = {}
-        directory = f'{settings.BASE_DIR}/media/women2'
+        directory = f'{settings.BASE_DIR}/media/women'
         for filename in os.listdir(directory):
             if filename.endswith('.jpg') or filename.endswith('.png'):
                 face_detials = fe.Mesh(f'{directory}/{filename}')
@@ -349,7 +349,7 @@ class GetUsers(APIView):
                 normalized_dict = ch.normalized_feature_array(image_details)
                 logger.info('saved')
                 counter += 1
-                time.sleep(1)
+                # time.sleep(1)
 
 
         for user in data:
