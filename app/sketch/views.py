@@ -297,8 +297,11 @@ class GetUsers(APIView):
         response = []
         data = models.CustomUser.objects.all()
 
-        logger.info(settings.BASE_DIR)
-        logger.info(f'{settings.BASE_DIR}media/men')
+        directory = f'{settings.BASE_DIR}/media/men'
+        logger.info(f'{settings.BASE_DIR}/media/men')
+        for filename in os.listdir(directory):
+            if filename.endswith('.jpg') or filename.endswith('.png'):
+                logger.info(filename)
 
         for user in data:
             response.append(
