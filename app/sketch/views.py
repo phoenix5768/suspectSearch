@@ -285,7 +285,7 @@ class DeleteCriminal(APIView):
     def post(self, request):
         request_data = ujson.loads(request.body.decode('utf-8'))
         try:
-            models.CriminalsData.objects.get(iin=request_data.get('iin'))
+            models.CriminalsData.objects.get(iin=request_data.get('iin')).delete()
             return JsonResponse('deleted', status=200, safe=False)
         except:
             return JsonResponse('Not found', status=404, safe=False)
@@ -337,7 +337,7 @@ class DeleteUsers(APIView):
     def post(self, request):
         request_data = ujson.loads(request.body.decode('utf-8'))
         try:
-            models.CustomUser.objects.get(iin=request_data.get('iin'))
+            models.CustomUser.objects.get(iin=request_data.get('iin')).delete()
             return JsonResponse('deleted', status=200, safe=False)
         except:
             return JsonResponse('Not found', status=404, safe=False)
