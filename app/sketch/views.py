@@ -235,11 +235,13 @@ class Login(APIView):
     @csrf_exempt
     def post(self, request):
         request_data = ujson.loads(request.body.decode('utf-8'))
+        logger.info(request_data)
 
         user = models.CustomUser.objects.get(
             iin=request_data.get('iin'),
             password=request_data.get('password')
         )
+        logger.info(user)
 
         if user:
             return JsonResponse({
