@@ -157,14 +157,27 @@ def generate_dob():
 
 
 def random_generator() -> dict:
-    # Sample data
     # List of Female Names
+    # names = [
+    #     "Emma", "Olivia", "Ava", "Isabella", "Sophia", "Mia", "Charlotte", "Amelia", "Harper", "Evelyn",
+    #     "Abigail", "Emily", "Elizabeth", "Mila", "Ella", "Avery", "Sofia", "Camila", "Aria", "Scarlett",
+    #     "Victoria", "Madison", "Luna", "Grace", "Chloe", "Penelope", "Layla", "Riley", "Zoey", "Nora",
+    #     "Lily", "Eleanor", "Hannah", "Lillian", "Addison", "Aubrey", "Ellie", "Stella", "Natalie", "Zoe",
+    #     "Leah", "Hazel", "Violet", "Aurora", "Savannah", "Audrey", "Brooklyn", "Bella", "Claire", "Skylar"
+    # ]
+
+    # List of Male Names
     names = [
-        "Emma", "Olivia", "Ava", "Isabella", "Sophia", "Mia", "Charlotte", "Amelia", "Harper", "Evelyn",
-        "Abigail", "Emily", "Elizabeth", "Mila", "Ella", "Avery", "Sofia", "Camila", "Aria", "Scarlett",
-        "Victoria", "Madison", "Luna", "Grace", "Chloe", "Penelope", "Layla", "Riley", "Zoey", "Nora",
-        "Lily", "Eleanor", "Hannah", "Lillian", "Addison", "Aubrey", "Ellie", "Stella", "Natalie", "Zoe",
-        "Leah", "Hazel", "Violet", "Aurora", "Savannah", "Audrey", "Brooklyn", "Bella", "Claire", "Skylar"
+        "James", "John", "Robert", "Michael", "William",
+        "David", "Richard", "Joseph", "Charles", "Thomas",
+        "Christopher", "Daniel", "Matthew", "Anthony", "Donald",
+        "Mark", "Paul", "Steven", "Andrew", "Kenneth",
+        "Joshua", "George", "Kevin", "Brian", "Edward",
+        "Ronald", "Timothy", "Jason", "Jeffrey", "Ryan",
+        "Gary", "Jacob", "Nicholas", "Eric", "Stephen",
+        "Jonathan", "Larry", "Justin", "Scott", "Brandon",
+        "Frank", "Benjamin", "Gregory", "Samuel", "Raymond",
+        "Patrick", "Alexander", "Jack", "Dennis", "Jerry"
     ]
 
     # List of Surnames
@@ -178,15 +191,12 @@ def random_generator() -> dict:
     offenses = ['Theft', 'Assault', 'Fraud', 'Drug Possession', 'Shoplifting', 'DUI', 'Speeding']
     zip_codes = ['10001', '20002', '30003', '40004', '50005']
 
-
-
-
     name = random.choice(names)
     surname = random.choice(surnames)
     dob = generate_dob()
     martial_status = random.choice(['Single', 'Married', 'Divorced'])
     offense = random.choice(offenses)
     zip_code = random.choice(zip_codes)
-    women = {'name': name, 'surname': surname, 'dob': dob, 'martial_status': martial_status, 'offense': offense, 'zip_code': zip_code}
+    people = {'name': name, 'surname': surname, 'dob': dob, 'martial_status': martial_status, 'offense': offense, 'zip_code': zip_code}
 
-    return women
+    return people
