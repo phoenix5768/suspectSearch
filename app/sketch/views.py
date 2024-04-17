@@ -1,6 +1,7 @@
 import base64
 import json
 import os
+import requests
 
 import ujson
 
@@ -193,23 +194,43 @@ class SearchByText(APIView):
     @csrf_exempt
     def post(self, request):
         request_data = ujson.loads(request.body.decode('utf-8'))
-        suspects_data = []
-        data = models.CriminalsData.objects.get(iin='000000000001')
 
-        suspects_data.append(
-            {
-                'firstName': data.first_name,
-                'lastName': data.last_name,
-                'iin': data.iin,
-                'maritalStatus': data.martial_status,
-                'offense': data.offence,
-                'zipCode': data.zip_code,
-                'image': f'https://suspectsearch.pythonanywhere.com{data.picture.url}'
-            }
-        )
-        logger.info(suspects_data)
+        local_server_url = 'http://localhost:8000/search-criminals/'
 
-        return JsonResponse(suspects_data, safe=False)
+        try:
+            # Send a POST request to the local server with the text data
+            response = requests.post(local_server_url, data=request_data.get('text'))
+
+            # Check if the request was successful (status code 200)
+            if response.status_code == 200:
+                # Get the response data from the server
+                response_data = response.text
+                return response_data
+            else:
+                print(f"Request failed with status code {response.status_code}")
+                return None
+        except requests.RequestException as e:
+            print(f"An error occurred: {e}")
+            return None
+
+        # request_data = ujson.loads(request.body.decode('utf-8'))
+        # suspects_data = []
+        # data = models.CriminalsData.objects.get(iin='000000000001')
+        #
+        # suspects_data.append(
+        #     {
+        #         'firstName': data.first_name,
+        #         'lastName': data.last_name,
+        #         'iin': data.iin,
+        #         'maritalStatus': data.martial_status,
+        #         'offense': data.offence,
+        #         'zipCode': data.zip_code,
+        #         'image': f'https://suspectsearch.pythonanywhere.com{data.picture.url}'
+        #     }
+        # )
+        # logger.info(suspects_data)
+        #
+        # return JsonResponse(suspects_data, safe=False)
 
 
 class AddPoliceman(APIView):
