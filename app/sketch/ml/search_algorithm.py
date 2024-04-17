@@ -93,7 +93,7 @@ def search_criminal(data: dict) -> list:
         initial_objs.append(json.loads(criminal.normalized_feature))
         iins.append(criminal.iin)
 
-    potential_suspects = knn(data, initial_objs, threshold=0.4, num_results=9)
+    potential_suspects = knn(data, initial_objs, threshold=0.4, num_results=20)
 
     for suspect in potential_suspects:
         result.append(iins[suspect[0]])
